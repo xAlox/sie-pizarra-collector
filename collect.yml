@@ -1,0 +1,39 @@
+name: SIE Pizarra — Colector Automático
+
+"on":
+  schedule:
+    # Corre cada 10 minutos, las 24 horas, todos los días
+    - cron: "*/10 * * * *"
+  workflow_dispatch:   # permite correrlo manualmente desde GitHub
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - name: Clonar repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: "pip"
+
+      - name: Instalar dependencias
+        run: pip install requests
+
+      - name: Ejecutar colector
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
+        run: python collector.py
+
+      - name: Guardar hash (para detectar cambios entre ejecuciones)
+        uses: actions/cache@v4
+        with:
+          path: .ultimo_hash
+          key: sie-hash-${{ github.run_id }}
+          restore-keys: |
+            sie-hash-
