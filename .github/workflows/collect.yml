@@ -2,13 +2,13 @@ name: SIE Pizarra — Colector Automático
 
 "on":
   schedule:
-    - cron: "*/10 * * * *"
+    - cron: "*/5 * * * *"
   workflow_dispatch:
 
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
 
     steps:
       - name: Clonar repositorio
@@ -28,11 +28,3 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_KEY: ${{ secrets.SUPABASE_KEY }}
         run: python collector.py
-
-      - name: Guardar hash
-        uses: actions/cache@v4
-        with:
-          path: .ultimo_hash
-          key: sie-hash-v2-${{ github.run_id }}
-          restore-keys: |
-            sie-hash-v2-
