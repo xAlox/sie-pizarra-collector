@@ -1,6 +1,6 @@
 name: SIE Pizarra — Colector Automático
 
-on:
+"on":
   schedule:
     # Corre cada 10 minutos, las 24 horas, todos los días
     - cron: "*/10 * * * *"
